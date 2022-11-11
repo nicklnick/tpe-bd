@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS backup
 );
 
 
-CREATE FUNCTION backup_cliente()
+CREATE OR REPLACE FUNCTION backup_cliente()
     RETURNS TRIGGER AS $$
 
     DECLARE
@@ -102,7 +102,7 @@ CREATE FUNCTION backup_cliente()
 
         INSERT INTO backup values (dni, nombre, telefono, cant_prestamos, monto_prestamos, monto_pago_cuotas, monto_prestamos > monto_pago_cuotas);
 
-        RETURN null;
+        RETURN OLD;
     END;
 
 $$ LANGUAGE plpgsql;
@@ -113,6 +113,9 @@ CREATE TRIGGER borrado_cliente
     BEFORE DELETE ON clientes_banco
     FOR EACH ROW
     EXECUTE PROCEDURE backup_cliente();
+
+
+delete from clientes_banco
 
 
 
